@@ -1,0 +1,327 @@
+﻿@model EquiModels.ResearchReportViewModel
+@{string actionname = TempData["Actionname"].ToString();}
+
+
+<div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close btn-lg" onclick="javascript: location.reload();">
+                &times;
+            </button>
+            @if (actionname == "Add")
+            {
+                <h4 class="modal-title" id="name">
+                    Add Research Report
+                </h4>
+            }
+            else
+            {
+                <h4 class="modal-title" id="name">Edit Report</h4>
+            }
+        </div>
+        <div class="modal-body" style="height: 500px; overflow-y: scroll;">
+            <img src="@Url.Content("~/Content/Images/loader.gif")" id="loading" class="loadingImg" height="90px" width="90px" />
+            <div>
+                <span style="color: red;"><em>* Indicates required field</em></span>
+                <br />
+                <div>
+                    <br />
+                    <div id="errormessage">
+                        <ul>
+                            @if (ViewBag.Errors != null)
+                            {
+                                foreach (var err in ViewBag.Errors)
+                                {
+                                    <li>@err.Value</li>
+                                }
+                            }
+
+                        </ul>
+                    </div>
+                    @if (TempData["message"] != null && TempData["message"].ToString().Length > 0)
+                    {
+                        <div id="message">
+                            @TempData["message"]
+                        </div>
+                    }
+                    @using (Html.BeginForm(actionname, "ResearchReports", FormMethod.Post, new { @class = "form-Control", @enctype = "multipart/form-data", @onsubmit = "return OnFormSubmit(this);" }))
+                    {
+                        @Html.HiddenFor(x => x.Id)
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-xs-2 required">
+                                                <label>Date</label><span style="color: red; font-size: 17px;">*</span>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.TextBoxFor(x => x.ReportDate, new { @class = "form-control date", @Value = Model.ReportDate == null ? null : Model.ReportDate.Value.ToString("dd-MMM-yyyy") })
+                                            </div>
+                                            <div class="col-xs-2 required">
+                                                <label>Product Type</label><span style="color: red; font-size: 17px;">*</span>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.DropDownListFor(x => x.ProductId, ViewBag.ProductsList as SelectList, "---select product---", new { @class = "form-control demo-cs-multiselect" })
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-xs-2 required">
+                                                <label>Attach PDF</label><span style="color: red; font-size: 17px;">*</span>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.TextBoxFor(x => x.PDF, new { @type = "file", @class = "form-control p" , @accept = "application/pdf" })
+                                            </div>
+                                            <div class="col-xs-2 required">
+                                                <label>Title</label><span style="color: red; font-size: 17px;">*</span>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.TextBoxFor(x => x.Title, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        @if (Model.PDF != null)
+                                        {
+                                            <div class="row">
+                                                <a href="@Url.Content("~/analystreports/pdf/" + Model.PDF)" target="_blank" style="font-size: 10px; font-family: verdana; color: Black; font-weight: bold">
+                                                    @(Model.PDF == null ? "" : Model.PDF)
+                                                </a>
+                                            </div>
+                                            <input type="hidden" name="ReportName" value="@Model.PDF" />
+                                        }
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-xs-2 required">
+                                                <label>Category</label>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.TextBoxFor(x => x.Category, new { @class = "form-control" })
+                                            </div>
+                                            <div class="col-xs-2 required">
+                                                <label>Primary Analyst</label><span style="color: red; font-size: 17px;">*</span>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.DropDownListFor(x => x.PrimaryAnalystId, ViewBag.AnalystList as SelectList, "---select analyst---", new { @class = "form-control demo-cs-multiselect" })
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-xs-2 required">
+                                                <label>Secondary Analysts</label>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <div id="analystList">
+                                                    <select id="SecondaryAnalystList" name="SecondaryAnalystId" class="form-control demo-cs-multiselect" data-placeholder="Select Analyst" multiple>
+                                                        @foreach (var _sp in ViewBag.AnalystList)
+                                                        {
+                                                            <option value="@_sp.Value">@_sp.Text</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-2 required">
+                                                <label>Sectors</label>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <div id="sectorList">
+                                                    <input type="text" placeholder="Selected all sectors" class="form-control" style="display:none;" id="allsectorslist" readonly />
+                                                    <select name="SectorList" class="demo-cs-multiselect form-control" data-placeholder="Select Sector" id="sectorlist" multiple>
+                                                        @foreach (var _sp in ViewBag.SectorsList)
+                                                        {
+                                                            <option value="@_sp.Value">@_sp.Text</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br />  
+                                            <div class="row">
+                                                <div class="col-xs-2 required">
+                                                    <label>Note</label><span style="color: red; font-size: 17px;">*</span>
+                                                </div>
+                                                <div class="col-xs-4 required">
+                                                    @Html.TextAreaFor(x => x.Note)
+                                                </div>
+                                            </div>
+                                        <br />
+                                        <div class="row" style="width:100%">
+                                            <div class="col-xs-10">
+                                                <table class="popup_table" width="100%" id="rpt_table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:250px;">Company</th>
+                                                            <th style="width:80px">Rating</th>
+                                                            <th>Target Price</th>
+                                                            <th>Current Price</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr id="firstrow">
+                                                            <td>
+                                                                <select name="CompaniesList[0].CompanyId" class="form-control combobox" data-placeholder="Select Companies...." id="0CompanyId" onchange="GetCompanyData(this)">
+                                                                    <option value="0"></option>
+                                                                    @foreach (var _sp in ViewBag.CompanyList)
+                                                                    {
+                                                                        <option value="@_sp.Value">@_sp.Text</option>
+                                                                    }
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <select name="CompaniesList[0].RatingId" class="form-control combobox" data-placeholder="Select Companies...." id="0RatingId">
+                                                                    <option value="0"></option>
+                                                                    @foreach (var _sp in ViewBag.RatingList)
+                                                                    {
+                                                                        <option value="@_sp.Value">@_sp.Text</option>
+                                                                    }
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="CompaniesList[0].TargetPrice" class="form-control EmailP" id="0TargetPrice">
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="CompaniesList[0].Price" class="form-control" id="0Price">
+                                                            </td>
+                                                            <td align="center">
+                                                                <input type="button" value="-" class="btn btn-default" style="display: none;" onclick="RemoveRow(this);" id="removebuttonTwo">
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <input type="button" value="Add" onclick="AddCompany(this);" class="button btn" id="AddRow" />
+                                                <input type="submit" class="btn btn-info" value="Save" id="save">
+                                                <input type="button" class="btn btn-warning" value="Cancel" onclick="javascript: location.reload();">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script type="text/javascript">
+    $('.date').datepicker({ autoclose: true, format: 'dd-M-yyyy' });
+    $('.demo-cs-multiselect').chosen({ width: '100%' });
+      
+    $(function () {
+          var selectedSectors = '@ViewBag.MarkToSectors';
+        var str_secarray = selectedSectors.split(',');
+        for (var i = 0; i < str_secarray.length; i++) {
+            str_secarray[i] = str_secarray[i].replace(/^\s*/, "").replace(/\s*$/, "");
+        }
+        $("#sectorlist").val(str_secarray).trigger("chosen:updated");
+
+        var selectedSecAnalysts = '@ViewBag.MarkToAnalysts';
+        var str_secanalystarray = selectedSecAnalysts.split(',');
+        for (var i = 0; i < str_secanalystarray.length; i++) {
+            str_secanalystarray[i] = str_secanalystarray[i].replace(/^\s*/, "").replace(/\s*$/, "");
+        }
+        $("#SecondaryAnalystList").val(str_secanalystarray).trigger("chosen:updated");
+
+         var jsonObj = '@Html.Raw(Json.Encode(ViewBag.CompanyDetails))';
+        var a = JSON.parse(jsonObj);
+        if (a != null) {               
+            $('#0CompanyId').val(a[0].CompanyId);
+            $('#0RatingId').val(a[0].RatingId);
+            $('#0TargetPrice').val(a[0].TargetPrice);
+            $('#0Price').val(a[0].Price);
+  
+            for (var i = 0; i < (a.length - 1) ; i++) {               
+                $("#rpt_table").find('tbody').append('<tr id=' + (i + 1) + '_CompaniesList><td> <select name=\'CompaniesList[' + (i + 1) + '].CompanyId\'  class="form-control combobox" data-placeholder="Select Companies...." id=' + (i + 1) + 'CompanyId onchange="GetCompanyData(this)">@foreach (var _sp in ViewBag.CompanyList){ <option value="@_sp.Value">@_sp.Text</option> }</select></td><td> <select name=\'CompaniesList[' + (i + 1) + '].RatingId\' class="form-control combobox" data-placeholder="Select Companies...." id=' + (i + 1) + 'RatingId> @foreach (var _sp in ViewBag.RatingList){<option value="@_sp.Value">@_sp.Text</option> }</select> </td><td><input type=\'text\' class="form-control EmailP" name=\'CompaniesList[' + (i + 1) + '].TargetPrice\' id=' + (i + 1) + 'TargetPrice /></td><td><input type=\'text\' class="form-control" name=\'CompaniesList[' + (i + 1) + '].Price\' id=' + (i + 1) + 'Price /></td> <td><input type="button" id=' + (i + 1) + '_CompaniesList value="-" class="btn btn-default" onclick="RemoveRow(this);" /></td><td style="display:none;"> <input type="checkbox"  value="true" name=\'CompaniesList[' + (i + 1) + '].Hide\'/ id= ' + (i + 1) + '_CompanyInfo_Hide></td></tr>');
+                $('#' + (i + 1) + 'CompanyId').val(a[i + 1].CompanyId);
+                $('#' + (i + 1) + 'RatingId').val(a[i + 1].RatingId);
+                $('#' + (i + 1) + 'TargetPrice').val(a[i + 1].TargetPrice);
+                $('#' + (i + 1) + 'Price').val(a[i + 1].Price);
+            }
+        }
+
+    });
+
+    function addNewItemRow(btnObj) {
+        var rowcount = $("#rpt_table > tbody").children().length;
+        $('#rpt_table').append('<tr>' + $('#firstrow').html() + '</tr>');
+        $('#rpt_table tr:last select').each(function () { $(this).val('0') });
+        $('#rpt_table tr:last input[type=text]').each(function () { $(this).val(''); });
+        $('#rpt_table tr:last td:last input[type=button]').css('display', 'block');
+    }
+
+    var rmk = 0;
+    function AddCompany() {
+        var count = $("#rpt_table").find("tbody tr").length; 
+        rmk = count
+        $("#rpt_table").find('tbody').append('<tr id=' + rmk + '_CompaniesList><td> <select name=\'CompaniesList[' + rmk + '].CompanyId\'  class="form-control combobox" data-placeholder="Select Companies...." id="companiesList" onchange="GetCompanyData(this)"><option>Select Company</option>@foreach (var _sp in ViewBag.CompanyList){ <option value="@_sp.Value">@_sp.Text</option> }</select></td><td> <select name=\'CompaniesList[' + rmk + '].RatingId\' class="form-control combobox" data-placeholder="Select Companies...." id="rating"><option>Select Rating</option>@foreach (var _sp in ViewBag.RatingList){<option value="@_sp.Value">@_sp.Text</option> }</select> </td><td><input type=\'text\' class="form-control" name=\'CompaniesList[' + rmk + '].TargetPrice\' /></td><td><input type=\'text\' class="form-control" name=\'CompaniesList[' + rmk + '].Price\' /></td><td><input type="button" id=' + rmk + '_CompaniesList value="-" class="btn btn-default" onclick="RemoveRow(this);" /></td> <td style="display:none;"> <input type="checkbox"  value="true" name=\'CompaniesList[' + rmk + '].Hide\'/ id= ' + rmk + '_CompaniesList_Hide></td> </tr>');
+        rmk++;
+    }
+
+    function RemoveRow(btnObj) {
+        objRow = btnObj.parentNode.parentNode;
+        $(objRow).remove();
+    }
+
+    function OnFormSubmit(frm) {
+        var res = '@TempData["message"]';
+        SubmitForm(frm,res);
+        return false;
+    }
+
+    function GetCompanyData(obj) {
+        var exit = false;
+        var id = obj.value;
+        var objRow = obj.parentNode.parentNode;
+
+        $(objRow).find("input[type=text]").each(function () { $(this).val(''); });
+        objSelect = $(objRow).find("td:eq(1) select");
+        $(objSelect).val('');
+        $("#rpt_table tr").each(function () {
+            var elem = $(this).find("td:eq(0)").find("select")[0];
+            if (elem != null) {
+                if (elem != obj && elem.value == obj.value) {
+                    var text = $("option:selected", obj).text();
+                    obj.value = '';
+                    alert("Company '" + text + "' already tagged in this report.");
+                    exit = true;
+                    return;
+                }
+            }
+
+        });
+
+        if (exit) return;
+        $.ajax({
+            url: '@Url.Action("GetCompanyData", "ResearchReports")',
+            data: {CompanyId: id },
+            type: 'GET',
+            success: function (data) {
+                var test = $(obj).closest('td').next('td');
+                var texts = $(objRow).find("input[type=text]");
+                $.each(data, function (a, b) {
+                    if (data[a].ItemCode == "CMP")
+                        $(texts[1]).val(data[a].ItemValue_Num); 
+                    if (data[a].ItemCode == "PRICE_TARGET")
+                        $(texts[0]).val(data[a].ItemValue_Num);
+                    if (data[a].ItemCode == "RATING") {
+                        var options = $(test).find("option");
+                        for (var i = 0; i < options.length; i++) {
+                            if (options[i].text == (data[a].ItemValue_Text).toUpperCase()) {
+                                options[i].selected  = true;
+                                break;
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+
+

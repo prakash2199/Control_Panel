@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Control Panel</title>
+    <link rel="icon" href="~/Content/Images/centrum_icon.jpg" type="image/x-icon" sizes="16x16">
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/intlTelInput.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/jquery")
+</head>
+<body class="body">
+    <div class="header">
+        <div class="container">
+            <div style="float: left;">
+                <img src="@Url.Content("~/Content/Images/centrum_logo.jpg")" alt="" style="height: 36px; margin-top: 30px;" />
+            </div>
+            <div style="float: right; margin-top: 15px;">
+                @{Html.RenderPartial("_LogOnUserControl");}
+            </div>
+            <br clear="all">
+        </div>
+    </div>
+    <div class="subheader">
+        @{Html.RenderPartial("_Menu");}
+    </div>
+    <div class="container">
+        @RenderBody()
+    </div>
+    <div id="footer">
+        <p>
+            Equity Monitor - Developed and maintained by Equitec &copy;
+            @(DateTime.Now.Year - 1 + "-" + DateTime.Now.Year)(Version 2.1)
+        </p>
+    </div>
+</body>
+</html>

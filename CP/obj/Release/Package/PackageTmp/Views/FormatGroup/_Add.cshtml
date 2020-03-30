@@ -1,0 +1,149 @@
+﻿@model EquiModels.FormatGroupViewModel
+@{
+    string Action = Convert.ToString(TempData["ActionName"]);
+}
+
+<style>
+    .colorpicker {
+        z-index: 3000;
+    }
+
+    .colorpicker_hex input {
+        right: 10px !important;
+        height: 20px !important;
+        top: 2px !important;
+    }
+
+    .colorpicker input {
+        height: 14px;
+        width: 37px;
+    }
+</style>
+
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close btn-lg" onclick="javascript: location.reload();">
+            &times;
+        </button>
+        @if (Action == "Add")
+        {
+            <h4 class="modal-title" id="name">
+                Add Format group
+            </h4>
+        }
+        else
+        {
+            <h4 class="modal-title" id="name">@("Edit " + Model.FormatGroup)</h4>
+        }
+    </div>
+    @if (TempData["message"] != null && TempData["message"].ToString().Length > 0)
+    {
+        <div id="message">
+            @TempData["message"]
+        </div>
+    }
+    <div class="modal-body" style="height: 400px; overflow-y: scroll;">
+        <div>
+            <span style="color: red;"><em>* Indicates required field</em></span>
+            <br />
+            <div id="errormessage">
+                @Html.ValidationSummary(false)
+
+            </div>
+          
+            @using (Html.BeginForm(Action, "FormatGroup", FormMethod.Post, new { @onsubmit = "return OnFormSubmit(this);" }))
+            {
+                <table class="popup_table">
+                    <tr>
+                        @Html.HiddenFor(x => x.Id)
+                        <th>
+                            Group Name <span style="color: white; font-size: 17px;">*</span>
+                        </th>
+                        @if (Model.FormatGroup == "Default")
+                        {
+                            <td>
+                                <div class="form-group">@Html.TextBox("FormatGroup", Model.FormatGroup, new { @readonly = "readonly", @class = "form-control" })</div>
+                            </td>
+
+                        }
+                        else
+                        {
+                            <td>
+                                <div class="form-group">@Html.TextBox("FormatGroup", Model.FormatGroup, new { @class = "form-control" })</div>
+                            </td>
+
+                        }
+                        <th>
+                            Fore Color <span style="color: white; font-size: 17px;">*</span>
+                        </th>
+
+                        <td>
+                            <div class="form-group">
+                                @Html.TextBoxFor(x => x.ForeColor, new { @readonly = "readonly", maxlength = "6", size = "6", @id = "ForeColor", @class = "form-control" })
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Bold
+                        </th>
+                        <td>
+                            @Html.CheckBoxFor(x => x.Bold)
+
+                        </td>
+                        <th>
+                            Back Color <span style="color: white; font-size: 17px;">*</span>
+                        </th>
+                        <td>
+                          
+                            @Html.TextBoxFor( x=>x.BackColor, new { @readonly = "readonly", @id = "BackColor", @class = "form-control", @style = "width:142px" })
+                         
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Italic
+                        </th>
+                        <td colspan="3" align="left">
+                            @Html.CheckBoxFor(x => x.Italic)
+
+                        </td>
+                    </tr>
+                </table>
+                <p style="padding-top: 5px">
+                    <input type="submit" value="Save" class="button btn" id="save" />
+                    <img id="loading-img-save" alt="loading" class="save-loader" src="@Url.Content("~/Content/Images/save_loader.gif")" />
+                    <input class="button btn" type="button" value="Close" onclick="javascript: location.reload();" />
+                </p>
+            }
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(function () {
+        $('#ForeColor, #BackColor').ColorPicker({
+            onSubmit: function (hsb, hex, rgb, el) {
+                $(el).val(hex);
+                $(el).ColorPickerHide();
+            },
+            onBeforeShow: function () {
+                $(this).ColorPickerSetColor(this.value);
+            }
+        })
+            .bind('keyup', function () {
+                $(this).ColorPickerSetColor(this.value);
+            });
+    });
+     function OnFormSubmit(frm) {
+        var res = ' @TempData["message"]';
+        SubmitForm(frm,res);
+        return false;
+    }
+
+
+    
+
+</script>

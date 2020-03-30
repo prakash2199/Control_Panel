@@ -1,0 +1,123 @@
+﻿@model EquiModels.DistributionViewModel
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close btn-lg" onclick="javascript: location.reload();">
+            &times;
+        </button>
+        <h4 class="modal-title" id="name">
+            Distribute Mass Mail
+        </h4>
+    </div>
+    <div class="modal-body" style="height: 500px; overflow-y: scroll;">
+        <div>
+            @if (TempData["message"] != null && TempData["message"].ToString().Length > 0)
+            {
+                <div id="message">
+                    @TempData["message"]
+                </div>
+            }
+            @using (Html.BeginForm("DistributeMassMail", "ResearchReports", FormMethod.Post, new { @class = "form-Control", @onsubmit = "return Submit(this);" }))
+            {
+                @Html.HiddenFor(x => x.FilePath)
+                @Html.HiddenFor(x => x.PDF)
+            
+                @Html.HiddenFor(x => x.ReportId)
+                @Html.HiddenFor(x=>x.Subject)
+                <table class="popup_table" width="100%">
+                    <tr>
+                        <th>
+                            Subject
+                        </th>
+                        <td>
+                            @Html.TextBoxFor(x => x.Subject, new { @class = "form-control", @disabled = "disabled" })
+                        </td>
+                    </tr>
+                    <tr></tr>
+                    <tr>
+                        <th>
+                            Report
+                        </th>
+                        <td colspan="2">
+                            @Html.TextBoxFor(x => x.PDF, new { @class = "form-control",@disabled="disabled" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Send To:
+                        </th>
+                        <td>
+                            @Html.TextBoxFor(x=>x.Emails, new { @class="form-control"})
+                        </td>
+                        <td>
+                            @Html.CheckBoxFor(x=>x.IsTestMail)<span style="position: relative;
+                            top: -13px;">Test mail Only.</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <div class="col-xs-9">
+                                @Html.TextAreaFor(x=>x.ReportBody, new { @class = "form-control", @style = "width:100%; height:300px;" })
+                            </div>
+                        </td>
+                        <td style="color:Black">
+                            <b>Available Tags<br /><i>(Click on tag to insert)</i></b>:
+                            <p />
+                            <a href="javascript:void(0)" onclick="createTags('{FIRSTNAME}');" style="text-decoration:underline; text-decoration-color:blue; color:blue;">{FIRSTNAME}</a> - First Name<br>
+                            <a href="javascript:void(0)" onclick="createTags('{LASTNAME}');" style="text-decoration:underline; text-decoration-color:blue; color:blue;">{LASTNAME}</a> - Last Name<br>
+                            @*<a href="javascript:void(0)" onclick="createTags('{FILELINK}');" style="text-decoration:underline; text-decoration-color:blue; color:blue;">{FILELINK}</a> - FILE Link<br>*@
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <input type="submit" value="Preview & send" name="previewsend" id="previewsend" class="button btn"
+                                   style="width: 150px;" />
+                            <input type="button" value="Close" class="button btn" onclick="self.parent.location.reload();self.parent.tb_remove();" />
+                        </td>
+                    </tr>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function createTags(TagName) {
+        var bodyText = $("#ReportBody").val();
+        bodyText +=" "+ TagName;
+        $('#ReportBody').summernote('code', bodyText);
+    }
+
+    function Submit(frm) {
+        $Distribute.html('');
+        $.ajax({
+            url: frm.action,
+            type: 'POST',
+            data: new FormData(frm),
+            processData: false,
+            contentType: false,
+            success: function (responseText, textStatus, XMLHttpRequest) {
+                $Distribute.html(responseText);
+                $('#Distribute_').modal('show');
+            }
+        });
+        return false;
+    }
+
+    $(document).ready(function () {
+        $('#ReportBody').summernote({
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']]
+            ],
+            height: 300,
+            focus: true,
+            dialogsInBody: true
+        });
+    });
+</script>
+

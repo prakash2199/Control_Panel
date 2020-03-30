@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewBag.Title = "Items";
+    int? SrNo = 1;
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="panel-heading">
+                <br />
+                <h3 class="panel-title">Items</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-striped table-bordered" id="Items" data-show-fullscreen="true" data-show-columns="true" data-show-export="true" data-click-to-select="true" data-detail-formatter="detailFormatter">
+                        <thead>
+                            <tr>
+                               <th data-field="SerialNo">Sr No.</th>
+                                <th data-field="Label">Label</th>
+                                <th data-field="Code">Code</th>
+                                <th data-field="Formula">Formula</th>
+                                <th data-field="DataType">Data Type</th>
+                                <th data-field="Category">Category</th>
+                                <th data-field="SubCategory">Sub Category</th>
+                            </tr>
+                            </thead>
+                    </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        ShowBootstrapTable("Items", "GetAllItems", 1, 'Items');
+    });
+</script>

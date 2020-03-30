@@ -1,0 +1,274 @@
+﻿@model EquiModels.UserViewModel
+@{string actionname = TempData["actionname"].ToString();}
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close btn-lg" onclick="javascript: location.reload();">
+            &times;
+        </button>
+        @if (actionname == "Add")
+        {
+            <h4 class="modal-title" id="name">
+                Add User
+            </h4>
+        }
+        else
+        {
+            <h4 class="modal-title" id="name">@("Edit " + Model.FirstName)</h4>
+        }
+    </div>
+    <div class="modal-body" style="height: 500px; overflow-y: scroll;">
+        <img src="@Url.Content("~/Content/Images/loader.gif")" id="loading" class="loadingImg" height="90px" width="90px" />
+        <div>
+            <span style="color: red;"><em>* Indicates required field</em></span>
+            <br />
+            <div id="errormessage">
+                <ul>
+                    @if (ViewBag.Errors != null)
+                    {
+                        foreach (var err in ViewBag.Errors)
+                        {
+                            <li>@err.Value</li>
+                        }
+                    }
+
+                </ul>
+            </div>
+            @if (TempData["message"] != null && TempData["message"].ToString().Length > 0)
+            {
+                <div id="message">
+                    @TempData["message"]
+                </div>
+            }
+            @using (Html.BeginForm(actionname, "Users", FormMethod.Post, new { enctype = "multipart/form-data", @onsubmit = "return OnFormSubmit(this);" }))
+            {
+                @Html.HiddenFor(x => x.Id)
+                @Html.HiddenFor(x=>x.Status)
+                @Html.HiddenFor(x => x.Avatar)
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-2 required">
+                                        <label>Prefix</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                       @Html.DropDownListFor(x => x.Prefix,ViewBag.PrefixList as SelectList,  new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-xs-2 required">
+                                        <label>User name</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.Username, new { @class = "form-control", @maxlength = "255" })
+                                    </div>
+                                    <div class="col-xs-2 required">
+                                        <label>First Name</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", @maxlength = "500" })
+
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <label>Last Name</label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", @maxlength = "500" })
+
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Department</label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                      
+                                        @Html.DropDownListFor(x => x.DepartmentId, ViewBag.Department as SelectList,"Select Department", new { @class = "form-control demo-cs-multiselect" })
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-xs-2 required">
+                                     <label>Designation<span style="color: red; font-size: 17px;">*</span></label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.Designation, new { @class = "form-control", @maxlength = "500" })
+
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Qualification</label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.Qualification, new { @class = "form-control", @maxlength = "500" })
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+
+                                    <div class="col-xs-2 required">
+                                        <label>Email</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.Email, new { @class = "form-control", @maxlength = "500",@type="Email" })
+
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Extension</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.Extension, new { @class = "form-control", @maxlength = "500" })
+                                    </div>
+
+                                </div>
+                                <br />
+                                <div class="row">
+
+                                    <div class="col-xs-2 required">
+                                        <label>Phone</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.Phone, new { @class = "form-control phone", @id = "phone", @maxlength = "13", @type = "tel" })
+
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Mobile</label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.Mobile, new { @class = "form-control cellno", @maxlength = "13", onKeyDown = "doCheck(this)" })
+                                        @Html.HiddenFor(x=>x.MobileExtension,new {@id= "MobileExtension" })
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+
+                                    <div class="col-xs-2 required">
+                                        <label>Role</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.DropDownListFor(x => x.PrimaryRoleId, ViewBag.RoleList as SelectList, "Select Role", new { @class = "form-control" })
+                                    </div>
+                                    <div class="col-xs-2 ">
+                                        <label>Fax</label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.Fax, new { @class = "form-control", @maxlength = "500" })
+
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+
+                                    <div class="col-xs-2">
+                                        <label>SortOrder</label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.SortOrder, new { @class = "form-control", @maxlength = "500" })
+
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Image</label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <input type="file" name="file" id="ImageFile" accept="image/*" onchange="show(this)"><br>
+                                         <div>
+                                           @if (Model == null || Model.Id == 0)
+                                            {<img id="user_img"
+                                             height="100"
+                                            width="90"
+                                             style="border:solid" />}
+                                            else
+                                             {
+                                              string FileName = Model.Avatar == null ? "unknown.jpg" : Model.Avatar;
+                                              <img id="user_img" src="@Url.Content(Model.ImgPath + FileName)" height="100" width="90" style="border:solid" />
+                                             }
+
+                                         </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <input type="submit" class="btn btn-info" value="Save" id="save">
+                                        <input type="button" class="btn btn-warning" value="Cancel" onclick="javascript: location.reload();">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $(".cellno").intlTelInput(
+             {
+                 utilsScript: "Scripts/utils.js"
+            });
+        LoadDropDown();
+        LoadPhone($('.cellno').val(),);
+    });
+
+    function show(input) {
+        //$('#ImageData').show();
+        if (input.files && input.files[0]) {
+            var filerdr = new FileReader();
+            filerdr.onload = function (e) {
+                $('#user_img').attr('src', e.target.result);
+            }
+            filerdr.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function doCheck(CurrentTextBox) {
+        var keycode;
+        var len;
+        keycode = (event.which) ? event.which : event.keyCode;
+        className = "country highlight";
+        var data = document.getElementsByClassName(className)[0];
+    
+        if (typeof data === "undefined") {
+            className = "country active";
+            data = document.getElementsByClassName(className)[0];
+            if (typeof data === "undefined") {
+                className = "country preferred";
+            }
+        }
+        len = document.getElementsByClassName(className)[0].lastChild.textContent.length;
+        if (GetCursorLocation(CurrentTextBox) <= len - 1) {
+            event.returnValue = false;
+        }
+        else if ((GetCursorLocation(CurrentTextBox) == len) && (keycode == 8)) {
+            event.returnValue = false;
+        }
+        else {
+            event.returnValue = true;
+        }
+    }
+    function validateMobile(number, id) {
+        var filter = /^\+(?:[0-9] ?){9,14}[0-9]$/;
+        if (filter.test(number) || number.toString().length <= 4) {
+            return true;
+        }
+        else {
+            $("#" + id).removeClass("input-validation-error");
+            $("#" + id).css("border-color", "red");
+            $("#" + id).tooltip('destroy');
+        }
+    }
+     
+    function OnFormSubmit(frm) {
+        var res = ' @TempData["message"]';
+        SubmitForm(frm,res);
+        return false;
+    }
+</script>
+

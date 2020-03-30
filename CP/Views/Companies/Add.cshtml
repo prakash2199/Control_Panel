@@ -1,0 +1,416 @@
+﻿@model EquiModels.CompaniesViewModel
+@{string actionname = TempData["Actionname"].ToString();}
+
+
+<style type="text/css">
+    .uppercase {
+        text-transform: uppercase;
+    }
+</style>
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close btn-lg"  onclick="javascript: location.reload();">
+            &times;
+        </button>
+        @if (actionname == "Add")
+        {
+            <h4 class="modal-title" id="name">
+                Add Company
+            </h4>
+        }
+        else
+        {
+            <h4 class="modal-title" id="name">@("Edit " + ' ' + Model.Name)</h4>
+        }
+    </div>
+    <div class="modal-body" style="height: 500px; overflow-y: scroll;">
+        <img src="@Url.Content("~/Content/Images/loader.gif")" id="loading" class="loadingImg" height="90px" width="90px" />
+        <div>
+            <span style="color: red;"><em>* Indicates required field</em></span>
+            <br />
+            <div>
+               
+                <br />
+                <div id="errormessage">
+                    <ul>
+                        @if (ViewBag.Errors != null)
+                        {
+                            foreach (var err in ViewBag.Errors)
+                            {
+                                <li>@err.Value</li>
+                            }
+                        }
+
+                    </ul>
+                </div>
+                @if (TempData["message"] != null && TempData["message"].ToString().Length > 0)
+                {
+                    <div id="message">
+                        @TempData["message"]
+                    </div>
+                }
+                @using (Html.BeginForm(actionname, "Companies", FormMethod.Post, new { @class = "form-Control", @onsubmit = "return OnFormSubmit(this);" }))
+                {
+                 
+                    @Html.HiddenFor(x => x.Id)
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <div class="col-xs-2 required">
+                                                @Html.LabelFor(x => x.Name)<span style="color: red; font-size: 17px;">*</span>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+                                            </div>
+                                            <div class="col-xs-2 required">
+                                                @Html.LabelFor(x => x.BloombergCode)<span style="color: red; font-size: 17px;">*</span>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.TextBoxFor(x => x.BloombergCode, new { @class = "form-control uppercase" })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <div class="col-xs-2 required">
+                                                @Html.LabelFor(x => x.Code)<span style="color: red; font-size: 17px;">*</span>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.TextBoxFor(x => x.Code, new { @class = "form-control uppercase" })
+                                                @Html.HiddenFor(x => x.Code)
+                                            </div>
+
+                                            <div class="col-xs-2 required">
+                                                @Html.LabelFor(x => x.IsinCode)
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.TextBoxFor(x => x.IsinCode, new { @class = "form-control" })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <br />
+
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <div class="col-xs-2 required">
+                                                @Html.LabelFor(x => x.SectorId)<span style="color: red; font-size: 17px;">*</span>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.DropDownListFor(x => x.SectorId, ViewBag.SectorsList as SelectList, "Select Sector", new { @class = "form-control", @maxlength = "30" })
+
+                                            </div>
+                                            <div class="col-xs-2 required">
+                                                @Html.LabelFor(x => x.CompanyStatusId)<span style="color: red; font-size: 17px;">*</span>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.DropDownListFor(x => x.CompanyStatusId, ViewBag.CompanyStatusList as SelectList, "Select Status", new { @class = "form-control", @maxlength = "30" })
+                                            </div>
+
+
+
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <div class="col-xs-2 ">
+                                                @Html.LabelFor(x => x.UploaderId)
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.DropDownListFor(x => x.UploaderId, ViewBag.Uploaders as SelectList, "Select Uploader", new { @class = "form-control", @maxlength = "30" })
+
+                                            </div>
+
+                                            <div class="col-xs-2 ">
+                                                @Html.LabelFor(x => x.ReportCodeId)
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.DropDownListFor(x => x.ReportCodeId, ViewBag.ReportCode as SelectList, "Select Report Code", new { @class = "form-control", @maxlength = "30" })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-xs-2">
+                                            <label>Address</label>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            @Html.TextAreaFor(x => x.Address, new { @class = "form-control", @maxlength = "255" })
+                                        </div>
+                                        <div class="col-xs-2 required">
+                                            <label>Country</label><span style="color: red; font-size: 17px;">*</span>
+                                        </div>
+                                        <div class="col-xs-4">
+
+                                            @Html.DropDownListFor(x => x.CountryId, ViewBag.countryList as SelectList, "Select Country", new { @class = "form-control demo-cs-multiselect" })
+
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <div class="col-xs-2">
+                                                @Html.LabelFor(x => x.Actuals)<span style="color: red; font-size: 17px;">*</span>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.DropDownListFor(x => x.Actuals, ViewBag.ActualEstimateList as SelectList, "Select Actuals", new { @class = "form-control", @maxlength = "3" })
+                                            </div>
+                                            <div class="col-xs-2 required">
+                                                @Html.LabelFor(x => x.PrimaryAnalystId)<span style="color: red; font-size: 17px;">*</span>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                @Html.DropDownListFor(x => x.PrimaryAnalystId, ViewBag.PrimaryAnalystList as SelectList, "Select PrimaryAnalyst", new { @class = "form-control", @maxlength = "30", @Id = "PrimaryAnalystId" })
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                    </div>
+                                    <br />
+                                    <br />
+                                    <div id="noborder">
+                                        <table align="left" class="noborder">
+                                            <tr>
+                                                <th>
+                                                    Analysts
+                                                </th>
+                                                <td>
+                                                    &nbsp;
+                                                </td>
+                                                <th>
+                                                    Secondary Analyst <span style="color: red; font-size: 17px;"></span>
+                                                </th>
+                                                <th></th>
+                                            </tr>
+                                            <tr>
+                                                <td valign="top" rowspan="3">
+                                                    <select id="analysts" multiple="multiple" style="width: 200px; height: 280px">
+                                                        @if (ViewBag.AnalystList != null)
+                                                        {
+                                                            foreach (var _sp in ViewBag.AnalystList)
+                                                            {
+                                                                <option value="@_sp.Id">@_sp.FullName</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td align="center">
+                                                    <input type="button" onclick="addSecondary()" value="Add Secondary Analyst" class="btn btn-info" style="height: 40px;width:176px;" /><br /><br />
+                                                    <input type="button" onclick="removeSecondary()" value="Remove Secondary Analyst" class="btn btn-info" style="height: 40px;width:176px;" />
+                                                </td>
+                                                <td>
+                                                    <select id="secondaryanalysts" name="SecondaryAnalystIds" multiple="multiple" style="width:200px;height:125px" class="@ViewData["error"]">
+                                                        @if (ViewBag.SecondaryAnalystList != null)
+                                                        {
+                                                            foreach (var _sp in ViewBag.SecondaryAnalystList)
+                                                            {
+                                                                <option value="@_sp.Id">@_sp.FullName</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr></tr>
+                                        </table>
+                                    </div>
+                                    @if (actionname == "Edit")
+                                    {<div class="row">
+                                            <div class="form-group">
+                                                <div class="col-xs-12" style="margin-top: 12px;">
+
+                                                    <div class="p" style="max-height: 350px;overflow-y:scroll;border: 1px solid darkgrey;">
+                                                        <table class="table table-striped table-bordered" style="float:right; margin-left:100px;width:100%;">
+                                                            <tr>
+                                                                <th>Finyear</th>
+                                                                <th>Result Type</th>
+                                                                <th>Period</th>
+                                                                <th>Company Type</th>
+                                                                @*<th>Action</th>*@
+                                                            </tr>
+                                                            <tbody>
+                                                                @if (ViewBag.UploadData != null && ViewBag.UploadData.Count > 0)
+                                                                {
+                                                                    foreach (var cmp in ViewBag.UploadData)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@cmp.FinYear</td>
+                                                                            <td>@cmp.ResultType</td>
+                                                                            <td>@cmp.Period</td>
+                                                                            <td>@cmp.CompanyType</td>
+                                                                            @*<td align="left">
+                                                    <a class="btn btn-mini" title="Delete" href="javascript:void(0);" onclick="DeleteCompanieData('@Model.Name','DeleteCompanyData','Companies','?&CompanyId=@Model.Id&CompanyDataId=@cmp.CompanyDataId');"><i class="fa fa-trash-o"></i></a>
+                                                </td>*@
+                                                                        </tr>
+
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    <tr>
+                                                                        <td colspan="5" class="text-center">
+                                                                            No Records Found
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+
+                                </div>
+                                    <div class="panel-footer text-left">
+                                        <input class="btn btn-info" type="submit" value="Save"  onclick="populateAnalysts();"  id="save" />
+                                        <input class="btn btn-warning" type="button"  value="Cancel" onclick="javascript: location.reload();" />
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+</div>
+    </div>
+
+<script type="text/javascript">
+    $("#PrimaryAnalystId").change(function () {
+        var PrimaryAnalyst = this.value;
+        SelectPrimaryAnalyst(PrimaryAnalyst)
+
+    });
+
+    $(function () { 
+        primary = document.getElementById("PrimaryAnalystId");
+        if (primary != null || primary != "") {
+            s = document.getElementById("analysts");
+            for (var i = 0; i < s.length; i++) {
+                if (s.options[i].value == primary.value)
+                    s.remove(i);
+            }
+        }
+        LoadDropDown();
+        $("#secondaryanalysts option").each(function (a) {
+            $("#analysts option[value=" + this.value + "]").each(function () {
+                $(this).remove();
+            });
+            $("#PrimaryAnalystId option[value=" + this.value + "]").each(function () {
+                $(this).remove();
+            });
+        });
+        var data = "@TempData["Actionname"]";
+        if (data == "Edit") {
+            $("#Code").attr("disabled", "disabled");
+        }
+    });
+
+    function addSecondary() {
+        s = document.getElementById("analysts");
+        p = document.getElementById("PrimaryAnalystId");
+        var t = document.getElementById("secondaryanalysts");
+        if (t.options.length < 4) {
+            transferSecondary(s, t, p, false);
+        } else { alert('Only Four secondary analyst can be added'); }
+    }
+
+    function removeSecondary() {
+        t = document.getElementById("analysts");
+        s = document.getElementById("secondaryanalysts");
+        p = document.getElementById("PrimaryAnalystId");
+        transferSecondary(s, t,p, true);
+    }
+
+    
+    $("#BloombergCode").keyup(function () {
+        myfunction('BloombergCode');
+    });
+
+    function myfunction(nm) {
+            $("#Code").val($("#BloombergCode").val());
+    }
+
+    function populateAnalysts() {
+        s = document.getElementById("secondaryanalysts");
+        t = document.getElementById("primaryanalysts");
+        for (i = 0; i < s.options.length; i++) s.options[i].selected = true;
+    }
+
+    function OnFormSubmit(frm) {
+        var res = ' @TempData["message"]';
+        SubmitForm(frm,res);
+        return false;
+    }
+
+    function SelectPrimaryAnalyst(PrimaryAnalyst) {
+        if (PrimaryAnalyst != null || PrimaryAnalyst != "") {
+            $("#analysts").empty();
+            var AnalystList = '@Html.Raw(Json.Encode(ViewBag.AnalystList))';
+            AnalystList = JSON.parse(AnalystList);
+            $.each(AnalystList, function (index, data) {
+                if (data.Id != PrimaryAnalyst) {
+                    $('#analysts').append('<option value="' + data.Id + '" >' + data.FullName + '</option>')
+                }
+            });
+            $("#secondaryanalysts option").each(function (a) {
+                $("#analysts option[value=" + this.value + "]").each(function () {
+                    $(this).remove();
+                });
+            });
+        }
+    }
+
+    $('#SectorId').change(function ()
+    {
+        var SecId = this.value;
+        if (SecId == "")
+        {
+            $("#PrimaryAnalystId").val("");
+            $('#secondaryanalysts').empty();
+        }
+            else {
+            $("#PrimaryAnalystId").empty();
+            $('#secondaryanalysts').empty();
+            var PrimaryAnalystList = '@Html.Raw(Json.Encode(ViewBag.PrimaryAnalystList))';
+            PrimaryAnalystList = JSON.parse(PrimaryAnalystList);
+            $.each(PrimaryAnalystList, function (index, data) {
+                $('#PrimaryAnalystId').append('<option value="' + data.Value + '" >' + data.Text + '</option>')
+            });
+            var SecondaryAnalystList = '@Html.Raw(Json.Encode(ViewBag.AnalystList))';
+            SecondaryAnalystList = JSON.parse(SecondaryAnalystList);
+            $.each(SecondaryAnalystList, function (index, data) {
+                $('#analysts').append('<option value="' + data.Value + '" >' + data.Text + '</option>')
+            });
+            $.ajax({
+                url: '@Url.Action("GetSectorAnalystById", "Companies")',
+                type: 'GET',
+                data: { SectorId: SecId },
+                success: function (response) {
+                    SelectPrimaryAnalyst(response.PrimaryAnalyst[0].Id)
+                    $("#PrimaryAnalystId").val(response.PrimaryAnalyst[0].Id);
+                    $('#secondaryanalysts').empty();
+                    $.each(response.SecondaryAnalyst, function (index, data) {
+                        $('#secondaryanalysts').append('<option value="' + data.Id + '" >' + data.FullName + '</option>')
+
+                    })
+                }
+            });
+        }
+    });
+</script>
+
+

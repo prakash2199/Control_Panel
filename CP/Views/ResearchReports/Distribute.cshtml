@@ -1,0 +1,118 @@
+﻿@model EquiModels.DistributionViewModel
+
+@{string actionname = TempData["Actionname"].ToString();}
+
+
+<style type="text/css">
+    .uppercase {
+        text-transform: uppercase;
+    }
+</style>
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close btn-lg" onclick="javascript: location.reload();">
+            &times;
+        </button>
+            <h4 class="modal-title" id="title">
+                Contact List
+            </h4>
+    </div>
+    <div class="modal-body" style="height: 500px; overflow-y: scroll;">
+        <img src="@Url.Content("~/Content/Images/loader.gif")" id="loading" class="loadingImg" height="90px" width="90px" />
+        <div>
+            <div>
+
+                <br />
+                <div id="errormessage">
+
+                </div>
+                @if (TempData["message"] != null && TempData["message"].ToString().Length > 0)
+                {
+                    <div id="message">
+                        @TempData["message"]
+                    </div>
+                }
+                @using (Html.BeginForm(actionname, "ResearchReports", FormMethod.Post, new { @class = "form-Control", @onsubmit = "return FormSubmit(this);" }))
+                {
+                    @Html.HiddenFor(x => x.ReportId)
+                    @Html.HiddenFor(x => x.Subject)
+                    @Html.HiddenFor(x => x.FilePath)
+                    @Html.HiddenFor(x => x.PDF)
+                    @Html.HiddenFor(x => x.ReportBody)
+                    <input type="submit" value="Distribute" class="button btn" style="width:80px;" /><input type="button" value="Close" onclick="self.parent.location.reload();self.parent.tb_remove();" class="button btn" />
+                    <br />
+                    <br />
+                    <a href="#" style="text-decoration:none;"><h3 class="togg" onclick="toggleGroup('Details',this)">Show Distribution List @(ViewBag.DistributionList.Count)</h3></a>
+                    <br />
+                    <div id="Details" style="display:none;">
+                        <table class="popup_table" width="100%">
+                            <tr>
+                                <th>
+                                    Client
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Emailid
+                                </th>
+                            </tr>
+
+                            @foreach (var q in ViewBag.DistributionList)
+                            {
+                                <tr>
+                                    <td>
+                                        @q.ClientName
+                                    </td>
+                                    <td>
+                                        @q.Name
+                                    </td>
+                                    <td>
+                                        @q.Email
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+   
+    function FormSubmit(frm) {
+        $Distribute.html('');
+        $.ajax({
+            url: frm.action,
+            type: 'POST',
+            data: new FormData(frm),
+            processData: false,
+            contentType: false,
+            success: function (responseText, textStatus, XMLHttpRequest) {
+                $Distribute.html(responseText);
+                $('#Distribute_').modal('show');
+            }
+        });
+        return false;
+    }
+    function toggleGroup(groupName, linkObj) {
+        if (linkObj.ClassName == "togg") {
+            linkObj.ClassName = "";
+            $("#" + groupName).slideUp("slow");
+
+        } else {
+            linkObj.ClassName = "togg";
+
+            $("#" + groupName).slideDown("slow");
+        }
+        return false;
+    }
+</script>
+
+
+

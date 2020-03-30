@@ -1,0 +1,152 @@
+﻿
+@{
+    ViewBag.Title = "Report Items";
+    int i = 1;
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="panel-heading">
+                <br />
+                <h3 class="panel-title">Report Items</h3>
+                <br />
+            </div>
+            <div class="panel-body">
+                <table width="100%" class="table table-striped table-bordered" style="margin-top: -13px;">
+                    <thead>
+                        <tr style="background: #f2f2f2;">
+                            <th>
+                                Sector Group
+                            </th>
+                            <th>
+                                Sectors
+                            </th>
+                            <th>
+                                Companies
+                            </th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>
+                            <table>
+                                @if (ViewBag.SectorGroup != null)
+                                {
+                                    foreach (var item in ViewBag.SectorGroup)
+                                    {
+                                        <tr>
+                                            <td class="hasitems">
+                                                @item.Name
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-mini" href="javascript:void(0);" onclick="ShowReportItems('','@item.Name','','','','GetReportItems','ReportItems');" title='Report Items [' @item.Name ']'>
+                                                    <i class="glyphicon glyphicon-edit"></i>
+                                                </a>
+
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+
+                            </table>
+                        </td>
+                        <td>
+                            <table>
+                                @if (ViewBag.SectorReportItems != null)
+                                {
+                                    foreach (var Sec in ViewBag.SectorReportItems)
+                                    {
+                                        <tr>
+                                            @if (Sec.SecCount > 0)
+                                            {
+                                                <td class="hasitems">
+                                                    @(i + ". " + Sec.Name)
+                                                </td>
+                                                <td>
+
+                                                    <a class="btn btn-mini" title='Report Items [@Sec.Name]' href="javascript:void(0);" onclick="ShowReportItems('@Sec.ReportGroup','@Sec.ReportCode','@Sec.ParentReportCode','@Sec.Name','','GetReportItems','ReportItems');">
+                                                        <i class="glyphicon glyphicon-edit"></i>
+                                                    </a>
+                                                    <a class="btn btn-mini" title='Delete Report Items' href="@Url.Action("DeleteReportItems", new { reportcode = "SC_" + Sec.Name })" onclick="return confirm('Do you really want to delete report items?')"><i class="fa fa-trash-o"></i> </a>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    @(i + ". " + Sec.Name)
+                                                </td>
+                                                <td>
+
+
+                                                    <a class="btn btn-mini" title='Report Items [@Sec.Name]' href="javascript:void(0);" onclick="ShowReportItems('@Sec.ReportGroup','@Sec.ReportCode','','@Sec.Name','','AddSectorReportItems','ReportItems');">
+                                                        <i class="glyphicon glyphicon-plus"></i>
+                                                    </a>
+                                                </td>
+                                            }
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+
+                            </table>
+                        </td>
+                        <td>
+                            <table>
+
+                                @{i = 1;}
+                                @if (ViewBag.CompanieReportItems != null)
+                                {
+                                    foreach (var Cmp in ViewBag.CompanieReportItems)
+                                    {
+                                        <tr>
+                                            @if (Cmp.CmpCount > 0)
+                                            {
+                                                <td class="hasitems">
+                                                    @(i + ". " + Cmp.Name)
+                                                </td>
+                                                <td>
+                                                    @{string reportcode = "CC_" + Cmp.Code;}
+                                                    <a class="btn btn-mini" title='Report Items [@Cmp.Name]' href="javascript:void(0);" onclick="ShowReportItems('@Cmp.ReportGroup','@Cmp.ReportCode','@Cmp.ParentReportCode','@Cmp.Code','','GetReportItems','ReportItems');">
+                                                        <i class="glyphicon glyphicon-edit"></i>
+                                                    </a>
+                                                    <a class="btn btn-mini" href="@Url.Action("deletereportitems", new { reportcode = "CC_" + Cmp.Code })" title='Delete Report Items' onclick="return confirm('Do you really want to delete report items?')">
+                                                        <i class="fa fa-trash-o"> </i>
+                                                    </a>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    @(i + ". " + Cmp.Name)
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-mini" title='Report Items [@Cmp.Name]' href="javascript:void(0);" onclick="ShowReportItems('@Cmp.ReportGroup','@Cmp.ReportCode','','@Cmp.Code','','AddCompanyReportItems','ReportItems');">
+                                                        <i class="glyphicon glyphicon-plus"></i>
+                                                    </a>
+                                                </td>
+                                            }
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="Add_">
+    <div id="AddModel_" class="modal-dialog PopUpChart" style="width:1200px;">
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        LoadDropDown();
+    });
+</script>

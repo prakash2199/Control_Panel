@@ -1,0 +1,513 @@
+﻿@model EquiModels.ClientContactViewModel
+
+@{string actionname = TempData["Actionname"].ToString();}
+@{
+
+    string AddedBy = (((EquiModels.UserViewModel)HttpContext.Current.Session["User"]).FirstName);
+}
+@*<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close btn-lg" onclick="javascript:location.reload()">
+            &times;
+        </button>*@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close btn-lg" onclick="javascript: location.reload();">
+            &times;
+        </button>
+        @if (actionname == "Add")
+        {
+            <h4 class="modal-title" id="name">
+                Add Client contact
+            </h4>
+        }
+        else
+        {
+            <h4 class="modal-title" id="name">@("Edit " + Model.Name)</h4>
+        }
+    </div>
+    <div class="modal-body" style="height: 500px; overflow-y: scroll;">
+        <img src="@Url.Content("~/Content/Images/loader.gif")" id="loading" class="loadingImg" height="90px" width="90px" />
+        <div>
+            <span style="color: red;"><em>* Indicates required field</em></span>
+            <br />
+            <div id="errormessage">
+                <ul>
+                    @if (ViewBag.Errors != null)
+                    {
+                        foreach (var err in ViewBag.Errors)
+                        {
+                            <li>@err.Value</li>
+                        }
+                    }
+
+                </ul>
+            </div>
+            @if (TempData["message"] != null && TempData["message"].ToString().Length > 0)
+            {
+                <div id="message">
+                    @TempData["message"]
+                </div>
+            }
+            @using (Html.BeginForm(actionname, "ClientContacts", FormMethod.Post, new { enctype = "multipart/form-data", @onsubmit = "return OnFormSubmit(this);" }))
+            {
+                @Html.HiddenFor(x => x.Id)
+                @Html.HiddenFor(x => x.Name)
+                @Html.HiddenFor(x => x.PrimarySalesPerson)
+                @Html.HiddenFor(x => x.SecondrySalesPepole)
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-2 required">
+                                        <label> First Name</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", @maxlength = "255" })
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Last Name</label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", @maxlength = "255" })
+
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-xs-2 required">
+                                        <label> Client</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.DropDownListFor(x => x.ClientId, ViewBag.ClientList as SelectList, "Select Client", new { @class = "form-control demo-cs-multiselect" })
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Designation</label>
+                                    </div>
+                                    <div class="col-xs-4">
+
+                                        @Html.TextBoxFor(x => x.Designation, new { @class = "form-control", @maxlength = "255" })
+
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <label> Phone</label>
+                                    </div>
+                                    <div class="col-xs-4 ">
+                                        @Html.TextBoxFor(x => x.Phone, new { @class = "form-control", type = "tel", @maxlength = "255" })
+
+                                    </div>
+
+                                    <div class="col-xs-2 ">
+                                        <label>Email</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.Email, new { @class = "form-control", @maxlength = "255" })
+
+                                    </div>
+
+                                </div>
+                                <br />
+
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <label>Mobile</label>
+                                    </div>
+                                    <div class="col-xs-4 ">
+                                        @Html.TextBoxFor(x => x.Mobile, new { @class = "form-control cellno", @maxlength = "15", onKeyDown = "doCheck(this)" })
+
+                                    </div>
+
+                                    <div class="col-xs-2 ">
+                                        <label>Fax</label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.Fax, new { @class = "form-control", @maxlength = "255" })
+
+                                    </div>
+
+                                </div>
+
+                                <br />
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <label> Priority</label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.DropDownListFor(x => x.PriorityId, ViewBag.PriorityList as SelectList, "Select Priority", new { @class = "form-control demo-cs-multiselect" })
+                                    </div>
+                                    @if (actionname == "Edit")
+                                    {<div class="col-xs-2">
+                                            <label>Primary SalesPerson</label>
+                                        </div>
+                                        <div class="col-xs-4 ">
+                                            @*@Html.TextBoxFor(x => x.PrimarySalesPerson, new { @class = "form-control", type = "tel", @maxlength = "255", @readonly = "true" })*@
+                                            @Html.DisplayTextFor(x => x.PrimarySalesPerson)
+
+                                        </div>
+                                    }
+
+                                </div>
+                                <br />
+
+                                @if (actionname == "Edit")
+                                {
+                                    <div class="row">
+                                        <div class="col-xs-2 ">
+                                            <label>Secondry SalesPepole</label>
+                                        </div>
+                                        <div class="col-xs-10">
+                                            @*@Html.TextBoxFor(x => x.SecondrySalesPepole, new { @class = "form-control", @maxlength = "255", @readonly = "true" })*@
+                                            @if (!string.IsNullOrEmpty(Model.SecondrySalesPepole))
+                                            {@Html.DisplayTextFor(x => x.SecondrySalesPepole)}
+                                        else
+                                        { <span>-</span>}
+
+                                        </div>
+                                    </div>
+                                    <br />
+                                }
+
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <label>Preferred Analysts</label>
+                                    </div>
+                                    <div class="col-xs-10 ">
+
+                                        <select name="PreferredAnalysts" id="AnalystList" class="form-control demo-cs-multiselect" data-placeholder="Select Analyst" multiple>
+                                            @foreach (var _sp in ViewBag.AnalystList)
+                                            {
+                                                <option value="@_sp.Value">@_sp.Text</option>
+                                            }
+                                        </select>
+
+                                    </div>
+
+
+
+                                </div>
+
+                                <br />
+
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <label>Products</label>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div id="productList">
+                                            <input type="text" placeholder="Selected all Products" class="form-control" style="display:none;" id="allProductlist" readonly />
+                                            <select name="PreferredProducts" class="demo-cs-multiselect form-control" data-placeholder="Select Product" id="productlist" multiple>
+                                                @foreach (var _sp in ViewBag.ProductsList)
+                                                {
+                                                    <option value="@_sp.Value">@_sp.Text</option>
+                                                }
+                                            </select>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="col-xs-2">
+                                        <label>Add All Products</label>
+                                    </div>
+
+                                    <div class="col-xs-2">
+                                        @Html.CheckBoxFor(x => x.AllProducts)
+                                    </div>
+
+                                </div>
+
+                                <br />
+
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <label>Sectors</label>
+                                    </div>
+                                    <div class="col-xs-6 ">
+
+                                        <div id="sectorList">
+                                            <input type="text" placeholder="Selected all sectors" class="form-control" style="display:none;" id="allsectorslist" readonly />
+                                            <select name="Sectors" class="demo-cs-multiselect form-control" data-placeholder="Select Sector" id="sectorlist" multiple>
+                                                @foreach (var _sp in ViewBag.SectorsList)
+                                                {
+                                                    <option value="@_sp.Value">@_sp.Text</option>
+                                                }
+                                            </select>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Add All Sectors</label>
+                                    </div>
+
+                                    <div class="col-xs-2">
+                                        @Html.CheckBoxFor(x => x.AllSectors)
+                                    </div>
+                                </div>
+
+                                <br />
+
+
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <label>Companies</label>
+                                    </div>
+                                    <div class="col-xs-6">
+
+                                        <div id="companyList">
+                                            <input type="text" placeholder="Selected all companies" class="form-control" style="display:none;" id="allcompanylist" readonly />
+                                            <select name="Companies" class="demo-cs-multiselect form-control" data-placeholder="Select Company" id="companylist" multiple>
+                                                @foreach (var _sp in ViewBag.CompanyList)
+                                                {
+                                                    <option value="@_sp.Value">@_sp.Text</option>
+                                                }
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Add All Companies</label>
+                                    </div>
+
+                                    <div class="col-xs-2">
+                                        @Html.CheckBoxFor(x => x.AllCompanies)
+                                    </div>
+                                </div>
+                                <br />
+
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        @Html.LabelFor(x => x.Remark)
+                                    </div>
+                                    <div class="col-xs-10">
+                                        @Html.TextAreaFor(x => x.Remark, new { @class = "form-control", @rows = "5" })
+                                        @Html.ValidationMessageFor(x => x.Remark)
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row" id="remarkid">
+
+                                    <table name="remark" id="addRemarks" class="table table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Added By</th>
+                                                <th>Remark</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.MarkRemark == null)
+                                            {
+                                                <tr id="norecords"><td colspan="4" class="text-center">No Records Found</td></tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+
+
+                                </div>
+
+
+
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <input type="button" class="btn btn-success" style="width: 95px;" value="Add Remark" onclick="AddRemark();">
+                                        <input type="submit" class="btn btn-info" value="Save" id="save">
+                                        <input type="button" class="btn btn-warning" value="Cancel" onclick="javascript: location.reload();">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function OnFormSubmit(frm) {
+        var res = ' @TempData["message"]';
+        SubmitForm(frm,res);
+        return false;
+    }
+
+    $(document).ready(function () {
+        $(".cellno").intlTelInput(
+            {
+                utilsScript: "Scripts/utils.js"
+            });
+        LoadDropDown();
+        LoadPhone($('.cellno').val());
+
+
+
+
+    });
+    function doCheck(CurrentTextBox) {
+        var keycode;
+        var len;
+        keycode = (event.which) ? event.which : event.keyCode;
+        className = "country highlight";
+        var data = document.getElementsByClassName(className)[0];
+
+        if (typeof data === "undefined") {
+            className = "country active";
+            data = document.getElementsByClassName(className)[0];
+            if (typeof data === "undefined") {
+                className = "country preferred";
+            }
+        }
+        len = document.getElementsByClassName(className)[0].lastChild.textContent.length;
+        if (GetCursorLocation(CurrentTextBox) <= len - 1) {
+            event.returnValue = false;
+        }
+        else if ((GetCursorLocation(CurrentTextBox) == len) && (keycode == 8)) {
+            event.returnValue = false;
+        }
+        else {
+            event.returnValue = true;
+        }
+    }
+
+    $(function () {
+        LoadDropDown();
+
+         //--------Analyst-----------
+        var Analyst = '@ViewBag.MarkToAnalyst';
+        var str_proarray = Analyst.split(',');
+        for (var i = 0; i < str_proarray.length; i++) {
+            str_proarray[i] = str_proarray[i].replace(/^\s*/, "").replace(/\s*$/, "");
+        }
+        $("#AnalystList").val(str_proarray).trigger("chosen:updated");
+    //--------product-----------
+        var PreferredProducts = '@ViewBag.MarkToPreferredProducts';
+        var str_proarray = PreferredProducts.split(',');
+        for (var i = 0; i < str_proarray.length; i++) {
+            str_proarray[i] = str_proarray[i].replace(/^\s*/, "").replace(/\s*$/, "");
+        }
+        $("#productlist").val(str_proarray).trigger("chosen:updated");
+
+      //------sector------------
+
+        var Sectors = '@ViewBag.MarkToSectors';
+        var str_proarray = Sectors.split(',');
+        for (var i = 0; i < str_proarray.length; i++) {
+            str_proarray[i] = str_proarray[i].replace(/^\s*/, "").replace(/\s*$/, "");
+        }
+        $("#sectorlist").val(str_proarray).trigger("chosen:updated");
+
+
+       //------companies------------
+
+        var Companies = '@ViewBag.MarkToCompanies';
+        var str_proarray = Companies.split(',');
+        for (var i = 0; i < str_proarray.length; i++) {
+            str_proarray[i] = str_proarray[i].replace(/^\s*/, "").replace(/\s*$/, "");
+        }
+        $("#companylist").val(str_proarray).trigger("chosen:updated");
+
+
+
+            var selectedRemarks=[];
+        selectedRemarks =@Html.Raw(Json.Encode(ViewBag.MarkRemark));
+        if(selectedRemarks!=null)
+        {
+            for (var i = 0; i < selectedRemarks.length; i++) {
+                $("#addRemarks").find('tbody').append('<tr id=' + i + '_remark ><td><input type=\'text\' class="form-control" name=\'RemarksList[' + i + '].RemarkDate\' value=' + '@DateTime.Now' + '/><td>' + '@AddedBy' + '</td><td><input type=\'text\' class="form-control" name=\'RemarksList[' + i + '].RemarkDes\' value="' + selectedRemarks[i] + '"/></td><td><input type="button" id=' + i + '_remark value="-" class="btn btn-default" style="background-color: #0074d9;" onclick="RemoveRemarkRow(this);" /></td><td style="display:none;"> <input type="checkbox"  value="true" name=\'RemarksList[' + i + '].Status\'/ id= '+ i +'_remark_Status></td></tr>');
+            }
+        }
+
+
+    });
+
+
+    $("#AllProducts").change(function (e) {
+        if ($(this).is(':checked')) {
+            $("#allProductlist").css("display", "block");
+            $("#productlist_chosen").hide();
+
+        }
+        else {
+            $("#allProductlist").css("display", "none");
+            $("#productlist_chosen").show();
+        }
+    });
+            var allproducts='@Model.AllProducts';
+    if (allproducts == "True")
+        {
+        $("#allProductlist").css("display","block");
+        $("#productlist_chosen").hide();
+        }
+
+    $("#AllSectors").change(function (e) {
+        if ($(this).is(':checked')) {
+            $("#allsectorslist").css("display", "block");
+            $("#sectorlist_chosen").hide();
+
+        }
+        else {
+            $("#allsectorslist").css("display", "none");
+            $("#sectorlist_chosen").show();
+        }
+    });
+        var allcompanies='@Model.AllCompanies';
+        if(allcompanies == "True")
+        {
+            $("#allcompanylist").css("display","block");
+            $("#companylist_chosen").hide();
+        }
+         var allsectors='@Model.AllSectors';
+        if(allsectors == "True")
+        {
+            $("#allsectorslist").css("display","block");
+            $("#sectorlist_chosen").hide();
+        }
+
+
+    $("#AllCompanies").change(function (e) {
+        if ($(this).is(':checked')) {
+            $("#allcompanylist").css("display", "block");
+            $("#companylist_chosen").hide();
+        }
+        else {
+            $("#allcompanylist").css("display", "none");
+            $("#companylist_chosen").show();
+        }
+    });
+
+
+        var rmk = 0;
+    function AddRemark() {
+        $("#norecords").remove();
+        var count=$("#addRemarks").find("tbody tr").length;
+        rmk=count;
+        var selectedRemarks = $('#Remark').val();
+        $("#addRemarks").find('tbody').append('<tr id=' + rmk + '_remark><td><input type=\'text\' class="form-control" name=\'RemarksList[' + rmk + '].RemarkDate\' value=' + '@DateTime.Now' + '/><td>' + '@AddedBy' + '</td><td><input type=\'text\' class="form-control" name=\'RemarksList[' + rmk + '].RemarkDes\' value="' + selectedRemarks + '"/></td> <td><input type="button" id=' + rmk + '_remark value="-" class="btn btn-default" style="background-color: #0074d9;" onclick="RemoveRemarkRow(this);" /></td> <td style="display:none;"> <input type="checkbox"  value="true" name=\'RemarksList[' + rmk + '].Status\'/ id= ' + rmk +'_remark_Status></td> </tr>');
+        $('#Remark').val('');
+        rmk++;
+    }
+
+    function RemoveRemarkRow(obj) {
+        $('table#addRemarks tr#' + obj.id).css("display","none") ;
+        $('#'+obj.id+'_Status' ).prop("checked", true);
+    }
+    $('.demo-cs-multiselect').chosen({ width: '100%' });
+    $('.default').width("100px");
+
+    $("#Mobile").removeClass("input-validation-error");
+    $("#Mobile").css("border", "1px solid #ccc");
+    $("#Mobile").tooltip('destroy');
+
+</script>
+
+
+

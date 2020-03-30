@@ -1,0 +1,157 @@
+﻿@model  EquiModels.ClientViewModel
+@{string actionname = TempData["Actionname"].ToString();}
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close btn-lg" data-dismiss="modal">
+            &times;
+        </button>
+        @if (actionname == "Add")
+        {
+            <h4 class="modal-title" id="name">
+                Add Client
+            </h4>
+        }
+        else
+        {
+            <h4 class="modal-title" id="name">@("Edit " + ' ' + Model.Name)</h4>
+        }
+    </div>
+    <div class="modal-body" style="height: 500px; overflow-y: scroll;">
+        <img src="@Url.Content("~/Content/Images/loader.gif")" id="loading" class="loadingImg" height="90px" width="90px" />
+        <div>
+            <span style="color: red;"><em>* Indicates required field</em></span>
+            <br />
+            <div id="errormessage">
+                <ul>
+                    @if (ViewBag.Errors != null)
+                    {
+                        foreach (var err in ViewBag.Errors)
+                        {
+                            <li>@err.Value</li>
+                        }
+                    }
+
+                </ul>
+            </div>
+            @if (TempData["message"] != null && TempData["message"].ToString().Length > 0)
+            {
+                <div id="message">
+                    @TempData["message"]
+                </div>
+            }
+            @using (Html.BeginForm(actionname, "Clients", FormMethod.Post, new { @class = "form-Control", @onsubmit = "return OnFormSubmit(this);" }))
+            {
+                @Html.HiddenFor(x => x.Id)
+              
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel">
+
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-2 required">
+                                        <label>Client</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextBoxFor(x => x.Name, new { @class = "form-control", @maxlength = "255" })
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Client Type</label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.DropDownListFor(x => x.ClientTypeId, ViewBag.ClientTypeList as SelectList, "Select Client Type", new { @class = "form-control demo-cs-multiselect" })
+
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <label>Address</label>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.TextAreaFor(x => x.Address, new { @class = "form-control", @maxlength = "255" })
+                                    </div>
+                                    <div class="col-xs-2 required">
+                                        <label>Country</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+
+                                        @Html.DropDownListFor(x => x.CountryId, ViewBag.countryList as SelectList, "Select Country", new { @class = "form-control demo-cs-multiselect" })
+
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-xs-2 required">
+                                        <label>Tier</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.DropDownListFor(x => x.TierId, ViewBag.TierList as SelectList, "Select Tier", new { @class = "form-control demo-cs-multiselect" })
+
+                                    </div>
+
+                                    <div class="col-xs-2 required">
+                                        <label>Primary Sales person</label><span style="color: red; font-size: 17px;">*</span>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        @Html.DropDownListFor(x => x.PrimarySalesPeopleId, ViewBag.PrimarySalePersonList as SelectList, "Select Primary Salespeple", new { @class = "form-control demo-cs-multiselect" })
+
+
+                                    </div>
+
+                                </div>
+                               
+                                <br />
+                                <div class="row">
+
+                                    <div class="col-xs-2">
+                                        <label> Seconadary Sales People</label>
+                                    </div>
+                                    <div class="col-xs-10">
+
+
+                                        <select name="SecondarySalesPeopleId" id="SalePersonList" class="form-control demo-cs-multiselect" data-placeholder="Select Sales People" multiple>
+                                            @foreach (var _sp in ViewBag.SecondarySalePersonList)
+                                            {
+                                                <option value="@_sp.Value">@_sp.Text</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                            <div class="panel-footer text-left">
+                                <input class="btn btn-info" type="submit" value="Save" id="save" />
+                                <input type="button" class="btn btn-warning" value="Cancel" data-dismiss="modal">
+                            </div>
+                            <br clear="all" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        LoadDropDown();
+        $('.demo-cs-multiselect').chosen({ width: '100%' });
+       
+        var selectedSalesPeople = '@ViewBag.MarkToSalesPeople';
+        var str_proarray = selectedSalesPeople.split(',');
+        for (var i = 0; i < str_proarray.length; i++) {
+            str_proarray[i] = str_proarray[i].replace(/^\s*/, "").replace(/\s*$/, "");
+        }
+        $("#SalePersonList").val(str_proarray).trigger("chosen:updated");
+
+    });
+    function OnFormSubmit(frm) {
+        var res = ' @TempData["message"]';
+        SubmitForm(frm,res);
+        return false;
+    }
+    $('.default').width("142px");
+</script>
+
+

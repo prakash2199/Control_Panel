@@ -1,0 +1,76 @@
+﻿.popup_table { border-collapse: collapse; }
+.popup_table th { text-align: left; background: #a9a9a9; color: white; }
+.popup_table th, .popup_table td 
+{
+        font-size: 10pt;border-style:solid; border-width:1px; border-color: #ddd; padding: 3px; 
+}
+
+.popup_table td table {border:none}
+.popup_table td table tr td {border:none}
+.popup_table tr.aggregate td { font-weight: bold; }
+.popup_table caption { text-align: left; font-weight: bold; font-size: 10pt; padding: 4px; }
+.popup_table.filters td, .popup_table.filters th { border-style: none; }
+.popup_table .date { font-size: 14px; font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; width: 100%;cursor:pointer; }
+.popup_table .button { font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; }
+
+/*Spice Jet 894*/
+.noborder { border-collapse: collapse; }
+.noborder th { text-align: left; background: #a9a9a9; color: white; }
+.noborder th, .noborder td {font-size: 8pt;border-style:solid; border-width:0px; border-color: #ddd; padding: 3px; }
+
+.noborder tr.aggregate td { font-weight: bold; }
+.noborder caption { text-align: left; font-weight: bold; font-size: 12pt; padding: 4px; }
+
+.noborder.filters td, .noborder.filters th { border-style: none; }
+
+.noborder .date { font-size: 8pt; font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; width: 80px; }
+.noborder .button { font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; }
+
+#page{ padding-left:10px; margin-right:auto;margin-left:auto;width:900px; margin-top:10px;}
+#noborder{}
+#noborder table {font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; border: solid 0px #e8eef4;border-collapse: collapse;}
+#noborder table td { font-size:14px; padding: 3px; border: solid 0px #e8eef4;}
+#noborder table th { font-size:13px;padding: 3px 2px; text-align: left;background: #a9a9a9; color: white;  }
+#noborder_sm {}
+#noborder_sm table {font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; border: solid 0px #e8eef4;border-collapse: collapse;}
+#noborder_sm table td { font-size:10px; padding: 3px; border: solid 0px #e4e4e4;}
+#noborder_sm table th { font-size:10px; padding: 3px 2px; text-align: left;background: #a9a9a9; color: white;  }
+#border {}
+#border table {font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; border: solid 0px #e8eef4;border-collapse: collapse;}
+#border table td { font-size:10px; padding: 3px; border: solid 0px #e4e4e4;}
+#border table th {  font-size:10px;padding: 3px 2px; text-align: left; background: #a9a9a9; color: white;}
+#dataitems { padding-left:20px; width:800px; padding-bottom:10px;}
+#dataitems table a  { color:Blue;}
+.error { color:Red; }
+.list { list-style: none; padding: 0px; margin: 0px;}
+.list li { background: #E6F0F8; padding: 4px; margin: 1px;}
+
+#_table{background: url(../Content/images/logopopup.jpg) no-repeat top; margin-left:auto;margin-right:auto; width:750px;  background-position: 180px 140px;}
+#_table a {color:#3E3530;}
+#_table td a {color:blue; text-decoration:none;}
+
+input[type=button],
+input[type=submit],
+input[type=reset] {
+    background: #2957a4;
+    padding: 5px 10px;
+    border: 1px;
+    margin: 3px;
+    color: White;
+    width: 60px;
+    font-size: 13px;
+}
+
+.label { color: #444; font-size: 10pt; }
+input[type=checkbox],input[type=radio] {
+    width:15px;
+    outline: none !important;
+}
+select {
+    height:30px;
+    width:100%;
+    font-size:13px;
+}
+textarea{
+    width:100%;
+}

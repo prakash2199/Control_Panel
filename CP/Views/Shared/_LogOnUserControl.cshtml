@@ -1,0 +1,25 @@
+﻿<div style="float: right; margin-top: 15px;">
+    <ul class="nav navbar-nav">
+      
+        @if(HttpContext.Current.Request.IsAuthenticated)
+        {
+           
+        <li class="dropdown" style="margin-top: -10px;">
+            @{ var UserSession = HttpContext.Current.Session["User"] as EquiModels.UserViewModel; }
+            @if (UserSession != null)
+            {
+                <a href="#" style="color: black;"
+                   class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                   aria-expanded="false">
+                    Welcome <b class="users"> @(UserSession.FirstName + " " + UserSession.LastName)</b>
+                    <br />
+
+                </a>
+            }
+
+        </li>
+         
+            }
+
+</ul>
+</div>

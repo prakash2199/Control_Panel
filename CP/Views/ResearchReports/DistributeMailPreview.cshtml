@@ -1,0 +1,105 @@
+﻿
+@model EquiModels.DistributionViewModel
+@{string actionname = TempData["Actionname"].ToString();}
+<style type="text/css">
+    a.showdetails {
+        float: right;
+        display: block;
+        color: #004a8d;
+        font-weight: bold;
+        font-size: 15px;
+        margin-left: 3px;
+    }
+
+    .PopupLoading {
+        padding-top: 250px;
+        padding-left: 300px;
+    }
+</style>
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close btn-lg" onclick="javascript: location.reload();">
+            &times;
+        </button>
+        <h4 class="modal-title" id="name">
+            Distribute Mail Preview
+        </h4>
+    </div>
+    <div class="modal-body" style="height:800px;overflow-y:scroll;">
+        <div id="_table" style="margin-left:20px">
+            @using (Html.BeginForm(actionname, "ResearchReports", FormMethod.Post, new { @class = "form-Control", @onsubmit = "return MailSubmit(this);" }))
+                {
+                    @Html.HiddenFor(x => x.PDF)
+                    @Html.HiddenFor(x => x.FilePath)
+                    @Html.HiddenFor(x => x.ReportId)
+                    @Html.HiddenFor(x => x.Subject)
+                @Html.HiddenFor(x=>x.ReportBody)
+                @Html.HiddenFor(x=>x.Emails)
+                @Html.HiddenFor(x=>x.IsTestMail)
+                    <table class="popup_table" width="100%">
+                        <tr>
+                            <th>Subject</th>
+                            <td>
+                            <div class="form-group">
+                                @Html.TextBoxFor(x => x.Subject, new { @class = "form-control",@disabled="disabled" })
+                            </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Attached Report</th>
+                            <td>
+                            <div class="form-group">
+                               @Html.TextBoxFor(x => x.PDF, new { @class = "form-control", @disabled = "disabled" })
+                            </div>
+                            </td>
+                        </tr>
+                        <tr>
+                        <td style="color:Black; font-size:14px">
+                            <b>Mail Body</b>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td colspan="2" style="color:Black;" width="100%">@Html.Raw(Model.ReportBody)</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="hidden" name="RBody" value="@Model.ReportBody" />
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <input type="submit" value="send" name="send" id="sendmail" class="button btn" /><input type="button" value="Close" onclick="self.parent.location.reload();self.parent.tb_remove();" class="button btn" /> <br /><br />
+                }
+        </div>
+    </div>
+</div>
+    <script type="text/javascript">
+    function toggleGroup(groupName, linkObj) {
+        if (linkObj.ClassName == "togg") {
+            linkObj.ClassName = "";
+            $("#" + groupName).slideUp("slow");
+
+        } else {
+            linkObj.ClassName = "togg";
+
+            $("#" + groupName).slideDown("slow");
+        }
+        return false;
+        }
+
+        function MailSubmit(frm) {
+            $Distribute.html('');
+            $.ajax({
+                url: frm.action,
+                type: 'POST',
+                data: new FormData(frm),
+                processData: false,
+                contentType: false,
+                success: function (responseText, textStatus, XMLHttpRequest) {
+                    $Distribute.html(responseText);
+                    $('#Distribute_').modal('show');
+                }
+            });
+            return false;
+        }
+    </script>

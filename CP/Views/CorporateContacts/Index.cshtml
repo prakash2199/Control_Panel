@@ -1,0 +1,99 @@
+﻿@model EquiModels.CorporateContactViewModel
+@{
+    ViewBag.Title = "Corporate Contacts";
+
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Corporate Contacts</h3>
+            </div>
+
+            @if (TempData["message"] != null && TempData["message"].ToString().Length > 0)
+            {
+                <div id="message" style="position:absolute;width:80%;top:58px;left:100px;">
+                    @TempData["message"]
+                </div>
+            }
+            <br />
+            <div class="panel-body">
+                <div class="panel-control">
+                    <div class="btn-group" style="float:left;margin-top:19px;">
+
+                        <a class="btn btn-default" id="DeleteItemsBtn" href="javascript:void(0);" onclick="ShowDeletedRecords('CorporateContacts', 'GetAll','DeletedItems', '#CorporateContacts','AddModel_');">Deleted Items</a>
+                        <a class="btn btn-default" href="javascript:void(0);"data-toggle="modal" data-target="#Add_" id="AddBtn" onclick="Add(0,'CorporateContact','Add','CorporateContacts');">Add New </a>
+                    </div>
+                </div>
+
+                <table class="table table-striped table-bordered" id="CorporateContacts" data-show-fullscreen="true" data-show-columns="true" data-show-export="true" data-click-to-select="true" data-detail-formatter="detailFormatter">
+                    <thead>
+                        <tr>
+                            <th data-field="SerialNo" data-sortable="true">Sr No.</th>
+                            <th data-field="Name" data-sortable="true">Name</th>
+                            <th data-field="CompanyName" data-sortable="true">CompanyName</th>
+                            <th data-field="Designation" data-sortable="true">Designation</th>
+                            <th data-field="Phone" data-sortable="true">Phone</th>
+                            <th data-field="Email" data-sortable="true">Email</th>
+                            <th data-field="operate" data-formatter="operateFormatter" events="operateEvents">Actions</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<div class="modal fade in" id="Add_">
+    <div id="AddModel_" class="modal-dialog PopUpChart" style="width:700px;"></div>
+</div>
+
+<script type="text/javascript">
+
+        //$(document).ready(function () {
+        //    dataTable("#CorporateContact");
+        //    LoadDropDown();
+        //});
+
+        //function AddCorporateContact(id, name, action, controller) {
+        //    Add(id, name, action, controller);
+        //}
+
+          $(document).ready(function () {
+              ShowBootstrapTable("CorporateContacts", "GetAll", 1, 'CorporateContacts');
+            LoadDropDown();
+    });
+
+
+    function operateFormatter(value, row, index) {
+        if (row.Status == 1) {
+            return [
+                ' <a class="edit btn btn-mini" href="javascript:void(0);" data-toggle="modal" data-target="#Add_" title="Edit" onClick="Add(\'' + row.Id + '\',\'' + row.Name + '\',\'' + 'Edit' + '\',\'' + 'CorporateContacts' + '\',\'' + 'AddModel_' +'\')" >',
+                '<i class="glyphicon glyphicon-edit"></i>',
+                '</a>',
+
+                '<a class="btn btn-mini" title = "Remove" href=@Url.Action("DeleteorRestore", "CorporateContacts")?Id=' + row.Id + '&Mode=' + 'Delete' + ' onclick="return confirm(\'' + 'Do you want to delete this record?' + '\')">',
+                '<i class="fa fa-trash-o"></i>',
+                '</a>'
+
+            ].join('');
+        }
+        else
+        {
+            return [
+
+                '<a class="btn btn-mini" title = "Restore" href=@Url.Action("DeleteorRestore", "CorporateContacts")?Id=' + row.Id + '&Mode=' + 'Restore' + ' onclick="return confirm(\'' + 'Do you want to restore this record?' + '\')">',
+                '<i class="fa fa-refresh"></i>',
+                '</a>'
+            ].join('');
+        }
+    }
+</script>
+
+
+
+

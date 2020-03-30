@@ -1,0 +1,177 @@
+﻿<div class="container">
+    <ul class="main">
+        <li class="main" style="width:69px">
+            <a href="@Url.Action("index", "home")" @(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "class=selected" : "")>
+                <span class="glyphicon glyphicon-home" aria-hidden="true" style="color: gray;"></span> HOME
+            </a>
+        </li>
+        @if (User.IsInRole("Administrator"))
+        {
+            <li class="dropdown main" style="margin-top: -10px;">
+                <a href="#" class="dropdown-toggle"
+                   data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <img src="@Url.Content("~/Content/Images/masters.png")" alt="" width="15" height="15" />
+                    MASTERS <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="@Url.Action("Index", "Sectors")" @((ViewContext.RouteData.Values["controller"].ToString() == "Sectors") ? "class=selected" : "")>
+                            Sectors
+                        </a>
+                    </li>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a href="@Url.Action("Index", "Companies")" @(ViewContext.RouteData.Values["controller"].ToString() == "Sectors" ? "class=selected" : "")>
+                            Companies
+                        </a>
+                    </li>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a href="@Url.Action("Index", "Clients")" @(ViewContext.RouteData.Values["controller"].ToString() == "Clients" ? "class=selected" : "")>
+                            Clients
+                        </a>
+                    </li>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a href="@Url.Action("Index", "Users")" @(ViewContext.RouteData.Values["controller"].ToString() == "Sectors" ? "class=selected" : "")>
+                            Users
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="dropdown main" style="margin-top: -10px;">
+                <a href="#" class="dropdown-toggle"
+                   data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <img src="@Url.Content("~/Content/Images/AddressBook.png")" alt="" width="15" height="15" />
+                    ADDRESS BOOK <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="@Url.Action("Index", "ClientContacts")" @((ViewContext.RouteData.Values["controller"].ToString() == "addressbook") ? "class=selected" : "")>
+                            Client Contacts
+                        </a>
+                    </li>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a href="@Url.Action("Index", "CorporateContacts")" @(ViewContext.RouteData.Values["controller"].ToString() == "addressbook" ? "class=selected" : "")>
+                            Corporate Contacts
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+            <li class="main" style="margin-top: -10px;">
+                <a href="@Url.Action("Index", "ResearchReports")">
+                    <span aria-hidden="true" style="color: gray;"></span>  RESEARCH REPORTS
+                </a>
+            </li>
+            <li class="dropdown main" style="margin-top: -10px;">
+                <a href="#" class="dropdown-toggle"
+                   data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <img src="@Url.Content("~/Content/Images/cp.png")" alt="" width="16" height="16" />
+                    RESEARCH CONTROL PANEL<span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" style="margin-left: 4px;">
+                    <li>
+                        <a href="@Url.Action("Index", "Items")" @(ViewContext.RouteData.Values["controller"].ToString() == "researchcontrolpanel" ? "class=selected" : "")>
+                            Items
+                        </a>
+                    </li>
+
+
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a href="@Url.Action("Index", "UploaderItems")" @(ViewContext.RouteData.Values["controller"].ToString() == "researchcontrolpanel" ? "class=selected" : "")>
+                            Uploader Items
+                        </a>
+                    </li>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a href="@Url.Action("Index", "ReportItems")" @(ViewContext.RouteData.Values["controller"].ToString() == "researchcontrolpanel" ? "class=selected" : "")>
+                            Report Items
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="main" style="margin-top: -10px;">
+                <a href="@Url.Action("index", "FormatGroup")">
+                    <span aria-hidden="true" style="color: gray;"></span>  FORMAT GROUP
+                </a>
+            </li>
+            <li class="main" style="margin-top: -10px;">
+                <a href="@Url.Action("Index", "UploadLog")">
+                    <span aria-hidden="true" style="color: gray;"></span>  UPLOAD LOG
+                </a>
+            </li>
+        }
+        @if (User.IsInRole("Analyst"))
+        {
+            <li class="dropdown main" style="margin-top: -10px;">
+                <a href="#" class="dropdown-toggle"
+                   data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <img src="@Url.Content("~/Content/Images/AddressBook.png")" alt="" width="15" height="15" />
+                    ADDRESS BOOK <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="@Url.Action("Index", "ClientContacts")" @((ViewContext.RouteData.Values["controller"].ToString() == "addressbook") ? "class=selected" : "")>
+                            Client Contacts
+                        </a>
+                    </li>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a href="@Url.Action("Index", "CorporateContacts")" @(ViewContext.RouteData.Values["controller"].ToString() == "addressbook" ? "class=selected" : "")>
+                            Corporate Contacts
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+            <li class="main" style="margin-top: -10px;">
+                <a href="@Url.Action("Index", "ResearchReports")">
+                    <span aria-hidden="true" style="color: gray;"></span>  RESEARCH REPORTS
+                </a>
+            </li>
+            <li class="dropdown main" style="margin-top: -10px;">
+                <a href="#" class="dropdown-toggle"
+                   data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <img src="@Url.Content("~/Content/Images/cp.png")" alt="" width="16" height="16" />
+                    RESEARCH CONTROL PANEL<span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" style="margin-left: 4px;">
+                    <li>
+                        <a href="@Url.Action("Index", "Items")" @(ViewContext.RouteData.Values["controller"].ToString() == "researchcontrolpanel" ? "class=selected" : "")>
+                            Items
+                        </a>
+                    </li>
+
+
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a href="@Url.Action("Index", "UploaderItems")" @(ViewContext.RouteData.Values["controller"].ToString() == "researchcontrolpanel" ? "class=selected" : "")>
+                            Uploader Items
+                        </a>
+                    </li>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a href="@Url.Action("Index", "ReportItems")" @(ViewContext.RouteData.Values["controller"].ToString() == "researchcontrolpanel" ? "class=selected" : "")>
+                            Report Items
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="main" style="margin-top: -10px;">
+                <a href="@Url.Action("index", "FormatGroup")">
+                    <span aria-hidden="true" style="color: gray;"></span>  FORMAT GROUP
+                </a>
+            </li>
+            <li class="main" style="margin-top: -10px;">
+                <a href="@Url.Action("Index", "UploadLog")">
+                    <span aria-hidden="true" style="color: gray;"></span>  UPLOAD LOG
+                </a>
+            </li>
+        }
+
+    </ul>
+</div>
